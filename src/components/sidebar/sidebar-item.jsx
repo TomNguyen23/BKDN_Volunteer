@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 const SideBarItem = ({ navigateTo, children }) => {
     return ( 
-        <div className="pb-2">
+        <div className="pb-5">
             <Link
                 className={(window.location.href.indexOf(navigateTo) !== -1) 
                     ? "text-blue-500 hover:text-blue-600" 

@@ -4,7 +4,7 @@ import URLS from '@/routes/urls';
 const EventDetailNavbar = () => {
     return ( 
         <div>
-            <ul className='flex mb-5'>
+            <ul className='flex flex-wrap mb-5'>
                 <EventDetailNavbarItem navigateTo={URLS.EVENT_DETAILS}>
                     Tổng quan
                 </EventDetailNavbarItem>

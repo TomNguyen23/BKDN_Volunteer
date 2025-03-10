@@ -7,18 +7,22 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import UserDefaultAvatar from "@/assets/user-default-avt.jpg";
 
 
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import { logout } from "@/redux/reducer/auth.reducer";
+import URLS from "@/routes/urls";
 
 const Navbar = () => {
     const dispatch = useDispatch();
     const navigateTo = useNavigate();
-    const user = useSelector(state => state.auth.user);
+    const user = useSelector(state => state.auth.login.user);
 
+    const path = window.location.pathname;
+    
     const logoutHandler = () => {
         dispatch(logout());
         navigateTo('/');
@@ -26,18 +30,22 @@ const Navbar = () => {
 
     return ( 
         <nav className="flex flex-wrap justify-between items-center px-5 md:px-12 bg-main h-16">
-            <h1 className="uppercase font-semibold text-sm text-white">quản lý sự kiện</h1>
+            <h1 className="uppercase font-semibold text-sm text-white">
+                {path === URLS.MANAGE_EVENTS ? 'Quản lý sự kiện' : 
+                path === URLS.COMMUNITY_SCORE ? 'Quản lý điểm PVCĐ' :
+                path === URLS.EXELLENCE_STUDENTS ? 'Sinh viên 5 tốt' : ''}
+            </h1>
 
             <DropdownMenu>
                 <DropdownMenuTrigger className="ml-5">
                     <Avatar>
-                        <AvatarImage src="https://github.com/shadcn.png" />
+                        <AvatarImage src={UserDefaultAvatar} />
                         <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Admin</DropdownMenuLabel>
+                    <DropdownMenuLabel>{user?.username}</DropdownMenuLabel>
                     
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={logoutHandler}>Đăng xuất</DropdownMenuItem>

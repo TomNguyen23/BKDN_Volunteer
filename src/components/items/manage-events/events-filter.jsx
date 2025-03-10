@@ -3,7 +3,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
-import CheckboxButton from "@/components/items/other/tag-checkbox";
+import CheckboxButton from "@/components/items/checkbox/tag-checkbox";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 

@@ -12,6 +12,20 @@ import { Button } from "@/components/ui/button";
   
 
 const EventRegistration = () => {
+    
+    const downloadFileAtUrl = (url) => {
+        const fileName = url.split("/").pop();
+        fetch(url)
+            .then((response) => response.blob())
+            .then((blob) => {
+                const blobUrl = window.URL.createObjectURL(new Blob([blob]));
+                const a = document.createElement("a");
+                a.href = blobUrl;
+                a.download = fileName;
+                a.click();
+            });
+    };
+
     return ( 
         <div>
             <EventChart />
@@ -33,7 +47,12 @@ const EventRegistration = () => {
                     </svg>
                 </label>
 
-                <Button className="btn-primary">Xuất file danh sách</Button>
+                <Button 
+                    className="btn-primary"
+                    onClick={() => downloadFileAtUrl("http://localhost:8081/images/bd7265ef-2164-4229-9d16-71159660175e_481286189_617434270928486_850820291784427096_n.jpg")}
+                >
+                    Xuất file danh sách
+                </Button>
             </div>
 
             <Table className="">

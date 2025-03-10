@@ -2,14 +2,8 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { setCredentials, logout } from '@/redux/reducer/auth.reducer';
 
 const baseQuery = fetchBaseQuery({ 
-    baseUrl: 'http://localhost:8081',
+    baseUrl: 'http://localhost:8080',
     prepareHeaders: (headers, { getState }) => {
-        // headers.set('Content-Type', 'application/json');
-        // headers.set('Accept', 'application/json');
-        // headers.set('Access-Control-Allow-Origin', '*');
-        // headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-        // headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-        // headers.set('Access-Control-Allow-Credentials', 'true');
         const token = getState().auth.login.token;
         if (token) {
             headers.set('Authorization', `Bearer ${token}`);
@@ -51,7 +45,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: baseQueryWithReauth,
-    tagTypes: [],
+    tagTypes: ['Events'],
     // eslint-disable-next-line no-unused-vars
     endpoints: (builder) => ({ })
 });

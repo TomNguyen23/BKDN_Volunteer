@@ -8,26 +8,32 @@ import { ToastAction } from "@/components/ui/toast";
 
 import UploadImageItem from "@/components/items/file-media/upload-image";
 import NewOrEditEvent from "@/components/cards/manage-events/new-or-edit-event";
-import { useCreateEventMutation } from "@/api/rtkQuery/featureApi/eventApiSlice";
 import URLS from "@/routes/urls";
 
-const NewEvent = () => {
+import { useGetEventCriteriasQuery } from "@/api/rtkQuery/featureApi/criteriaApiSlice";
+import { useSelector } from "react-redux";
+import { useGetEventByIdQuery } from "@/api/rtkQuery/featureApi/eventApiSlice";
+
+const EditEvent = () => {
     const { toast } = useToast();
     const navigateTo = useNavigate();
     const newOrEditEventRef = useRef(null);
     const [eventPanel, setEventPanel] = useState([]);
 
+    const eventID = useSelector((state) => state.events.eventID);
+    const { data: event } = useGetEventByIdQuery(eventID);
+    const { data: eventCriteria } = useGetEventCriteriasQuery(eventID);
+
     const handleGetImage = (image) => {
         setEventPanel(image);
     }
 
-    const [createEvent, { isLoading }] = useCreateEventMutation();
     const handleSubmit = async () => {
         if (newOrEditEventRef.current) {
             const eventData = newOrEditEventRef.current.collectAndValidateData();
-            // if (eventData) {
-            //     console.log("Dữ liệu gửi lên server:", eventData);
-            // }
+            if (eventData) {
+                console.log("Dữ liệu gửi lên server:", eventData);
+            }
 
             if (!eventData) return; 
     
@@ -40,30 +46,35 @@ const NewEvent = () => {
                 }
             });
 
-            await createEvent(formData)
-                .unwrap()
-                .then((res) => {
-                    toast({
-                        title: "Thành công",
-                        description: res.data,
-                    });
-                    navigateTo(URLS.MANAGE_EVENTS);
-                })
-                .catch((error) => {
-                    toast({
-                        variant: "destructive",
-                        title: "Uh oh! Có gì đó sai sai.",
-                        description: error.data,
-                        action: <ToastAction altText="Try again">Thử lại</ToastAction>,
-                    });
-                });
+            // await createEvent(formData)
+            //     .unwrap()
+            //     .then((res) => {
+            //         toast({
+            //             title: "Thành công",
+            //             description: res.data,
+            //         });
+            //         navigateTo(URLS.MANAGE_EVENTS);
+            //     })
+            //     .catch((error) => {
+            //         toast({
+            //             variant: "destructive",
+            //             title: "Uh oh! Có gì đó sai sai.",
+            //             description: error.data,
+            //             action: <ToastAction altText="Try again">Thử lại</ToastAction>,
+            //         });
+            //     });
         }
     };
     return ( 
         <>
         <h1 className="text-3xl font-bold text-gray-700">Tạo sự kiện mới</h1>
 
-        <NewOrEditEvent ref={newOrEditEventRef} onHandleEventInParent={() => {}} />
+        <NewOrEditEvent 
+            ref={newOrEditEventRef} 
+            onHandleEventInParent={() => {}} 
+            event={event}
+            eventCriteria={eventCriteria}
+        />
 
         <Separator className="my-10" />
 
@@ -74,15 +85,16 @@ const NewEvent = () => {
 
         <UploadImageItem getImages={handleGetImage} />
 
-        {isLoading 
+        {/* {isLoading 
             ? <Button className='mt-8bg-main-hover float-end' disabled>
                 Đang tạo sự kiện
                 <span className="loading loading-dots loading-md ml-2"></span>
             </Button>
             : <Button className="mt-8 bg-main hover:bg-main-hover float-end" onClick={handleSubmit}>Xác nhận & Tạo sự kiện</Button>
-        }
+        } */}
+        <Button className="mt-8 bg-main hover:bg-main-hover float-end" onClick={handleSubmit}>Cập nhật sự kiện</Button>
         </>
-     );
+    );
 }
  
-export default NewEvent;
+export default EditEvent;

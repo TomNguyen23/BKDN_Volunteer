@@ -12,8 +12,8 @@ function HomePage( { children } ) {
     return ( 
     <div className="flex flex-wrap min-h-screen">
         <SideBar />
-        <div className="md:w-1/5"></div>
-        <div className="md:w-4/5 pb-7">
+        <div className="lg:w-1/5"></div>
+        <div className="w-full lg:w-4/5 pb-7">
             <Navbar />
             <div className="flex-grow m-5 md:mx-12 md:my-7">
                 {

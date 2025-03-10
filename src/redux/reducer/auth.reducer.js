@@ -5,6 +5,7 @@ const initialState = {
         user: null,
         token: null,
         refreshToken: null,
+        role: null,
     },
     register: {
         user: null,
@@ -20,10 +21,11 @@ const authSlice = createSlice({
 
     reducers: {
         setCredentials(state, action) {
-            const { accessToken, refreshToken, userInfo } = action.payload;
-            state.login.user = userInfo;
+            const { accessToken, refreshToken, userResponse, role } = action.payload;
+            state.login.user = userResponse;
             state.login.token = accessToken;
             state.login.refreshToken = refreshToken;
+            state.login.role = role;
         },
 
         setAvatar(state, action) {
@@ -33,6 +35,7 @@ const authSlice = createSlice({
         logout(state) {
             state.login.user = null;
             state.login.token = null;
+            state.login.role = null;
         },
 
         register(state, action) {

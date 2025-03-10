@@ -12,8 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { useLoginMutation } from '@/api/rtkQuery/featureApi/authApiSlice';
 import { setCredentials } from '@/redux/reducer/auth.reducer';
 import { useToast } from '@/components/ui/use-toast';
-import { Login } from '@/api/axios/auth';
-
+import URLS from '@/routes/urls';
 
 
 const LoginPage = () => {
@@ -37,29 +36,16 @@ const LoginPage = () => {
             .unwrap()
             .then((res) => {
                 dispatch(setCredentials(res));
-                navigateTo('/manage-events');     
+                navigateTo(URLS.MANAGE_EVENTS);     
             })
             .catch((error) => {
                 toast({
                     variant: "destructive",
                     title: "Uh oh! Có gì đó sai sai.",
-                    description: error.data.message,
+                    description: error.data,
                     action: <ToastAction altText="Try again">Thử lại</ToastAction>,
                 })
             });  
-
-            // try {
-            //     const res = await Login(values);
-            //     dispatch(setCredentials(res));
-            //     navigateTo('/manage-events');
-            // } catch (error) {
-            //     toast({
-            //         variant: "destructive",
-            //         title: "Uh oh! Có gì đó sai sai.",
-            //         description: error.data.message,
-            //         action: <ToastAction altText="Try again">Thử lại</ToastAction>,
-            //     })
-            // }
         }
             
     });

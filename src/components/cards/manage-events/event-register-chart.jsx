@@ -1,7 +1,4 @@
-"use client"
-
-import * as React from "react"
-import { Label, Pie, PieChart } from "recharts"
+import { Bar, BarChart, CartesianGrid, Rectangle, XAxis } from "recharts"
 
 import {
   Card,
@@ -10,12 +7,9 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import {
-//   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-  // ChartLegend,
-  // ChartLegendContent,
 } from "@/components/ui/chart"
 const chartData = [
   { grade: "khóa 20", registrations: 275, fill: "var(--color-grade_1)" },
@@ -28,7 +22,7 @@ const chartData = [
 
 const chartConfig = {
   registrations: {
-    label: "Sinh viên tham gia",
+    label: "Sinh viên",
   },
   grade_1: {
     label: "khóa 20",
@@ -57,70 +51,61 @@ const chartConfig = {
 }
 
 export function EventChart() {
-  const totalregistrations = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.registrations, 0)
-  }, [])
+  const percentJonined = (100 / 300) * 100
 
   return (
-    <Card className="flex flex-col">
-      <CardHeader className="items-center pb-0">
-        <CardTitle>Tỉ lệ sinh viên theo khóa đăng ký sự kiện</CardTitle>
-      </CardHeader>
-      <CardContent className="flex-1 pb-0">
-        <ChartContainer
-          config={chartConfig}
-          className="mx-auto aspect-square max-h-[350px] pb-0 [&_.recharts-pie-label-text]:fill-foreground"
-        >
-          <PieChart>
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
-            <Pie
-              data={chartData}
-              dataKey="registrations"
-              nameKey="grade"
-              innerRadius={70}
-              strokeWidth={5}
-              label 
-            >
-              <Label
-                content={({ viewBox }) => {
-                  if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                    return (
-                      <text
-                        x={viewBox.cx}
-                        y={viewBox.cy}
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                      >
-                        <tspan
-                          x={viewBox.cx}
-                          y={viewBox.cy}
-                          className="fill-foreground text-3xl font-bold"
-                        >
-                          {totalregistrations.toLocaleString()}
-                        </tspan>
-                        <tspan
-                          x={viewBox.cx}
-                          y={(viewBox.cy || 0) + 24}
-                          className="fill-muted-foreground"
-                        >
-                          Sinh viên tham gia
-                        </tspan>
-                      </text>
-                    )
-                  }
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+      <Card className="col-span-2">
+        <CardHeader>
+          <CardTitle>Số lượng sinh viên tham gia theo khóa</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ChartContainer config={chartConfig}>
+            <BarChart accessibilityLayer data={chartData}>
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="grade"
+                tickLine={false}
+                tickMargin={10}
+                axisLine={false}
+              />
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent hideLabel />}
+              />
+              <Bar
+                dataKey="registrations"
+                strokeWidth={2}
+                radius={8}
+                activeBar={({ ...props }) => {
+                  return (
+                    <Rectangle
+                      {...props}
+                      fillOpacity={0.8}
+                      // eslint-disable-next-line react/prop-types
+                      stroke={props.payload.fill}
+                      strokeDasharray={4}
+                      strokeDashoffset={4}
+                    />
+                  )
                 }}
               />
-            </Pie>
-            {/* <ChartLegend
-              content={<ChartLegendContent nameKey="grade" />}
-              className="-translate-y-2 flex-wrap gap-2 [&>*]:basis-1/4 [&>*]:justify-center"
-            /> */}
-          </PieChart>
-        </ChartContainer>
-      </CardContent>
-    </Card>
+            </BarChart>
+          </ChartContainer>
+        </CardContent>
+      </Card>
+
+      <Card className="flex flex-col">
+        <CardHeader className="items-center pb-0">
+          <CardTitle>Tổng số lượng đã đăng ký</CardTitle>
+        </CardHeader>
+        <CardContent className="flex justify-center items-center m-auto">
+          <div className="radial-progress bg-blue-50 border-4 border-blue-50 text-blue-500 text-sm font-medium"
+            style={{ "--value": `${percentJonined}`, "--size": "18rem", "--thickness": "2rem" }} 
+            aria-valuenow={70} role="progressbar">120/400 sinh viên</div>
+        </CardContent>
+      </Card>
+    </div>
   )
 }
+

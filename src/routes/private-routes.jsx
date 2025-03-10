@@ -4,7 +4,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 
 const PrivateRoute = ({ element: Component, roles, ...rest }) => {
     const token = useSelector((state) => state.auth.login.token);
-    const role = useSelector((state) => state.auth.login.user.role);
+    const role = useSelector((state) => state.auth.login.role);
     const location = useLocation();
 
     if (!token) {
