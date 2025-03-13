@@ -31,7 +31,11 @@ const Navbar = () => {
     return ( 
         <nav className="flex flex-wrap justify-between items-center px-5 md:px-12 bg-main h-16">
             <h1 className="uppercase font-semibold text-sm text-white">
-                {path === URLS.MANAGE_EVENTS ? 'Quản lý sự kiện' : 
+                {path === URLS.MANAGE_EVENTS || 
+                path === URLS.EVENT_DETAILS || 
+                path === URLS.EVENT_REGISTRATION ||
+                path === URLS.JOINED_EVENTS ? 'Quản lý sự kiện' : 
+                path === URLS.EXTERNAL_ACTIVITIES ? 'Hoạt động khác' :
                 path === URLS.COMMUNITY_SCORE ? 'Quản lý điểm PVCĐ' :
                 path === URLS.EXELLENCE_STUDENTS ? 'Sinh viên 5 tốt' : ''}
             </h1>

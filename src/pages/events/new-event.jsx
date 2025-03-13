@@ -43,9 +43,10 @@ const NewEvent = () => {
             await createEvent(formData)
                 .unwrap()
                 .then((res) => {
+                    console.log(res);
                     toast({
                         title: "Thành công",
-                        description: res.data,
+                        description: res.mess,
                     });
                     navigateTo(URLS.MANAGE_EVENTS);
                 })
@@ -53,7 +54,7 @@ const NewEvent = () => {
                     toast({
                         variant: "destructive",
                         title: "Uh oh! Có gì đó sai sai.",
-                        description: error.data,
+                        description: error.data.err,
                         action: <ToastAction altText="Try again">Thử lại</ToastAction>,
                     });
                 });

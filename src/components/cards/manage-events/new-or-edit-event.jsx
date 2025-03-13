@@ -7,9 +7,9 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from '@/components/ui/use-toast';
 import { ToastAction } from '@/components/ui/toast';
 import CriteriaCheckboxItem from "@/components/items/checkbox/criteria-checkbox";
-import { useGetEventCriteriasQuery, useGetFalcutyCriteriaQuery, useGetSchoolCriteriaQuery } from "@/api/rtkQuery/featureApi/criteriaApiSlice";
+import { useGetFalcutyCriteriaQuery, useGetSchoolCriteriaQuery } from "@/api/rtkQuery/featureApi/criteriaApiSlice";
 import { useSelector } from "react-redux";
-import { useGetEventByIdQuery } from "@/api/rtkQuery/featureApi/eventApiSlice";
+import { useGetAcademicYearsQuery, useGetEventByIdQuery } from "@/api/rtkQuery/featureApi/eventApiSlice";
 
 // eslint-disable-next-line no-unused-vars
 const NewOrEditEvent = forwardRef(({ onHandleEventInParent }, ref) => {
@@ -21,7 +21,7 @@ const NewOrEditEvent = forwardRef(({ onHandleEventInParent }, ref) => {
     if (isEdit === false) eventID = "";
 
     const { data: event } = useGetEventByIdQuery(eventID);
-    const { data: eventCriteria } = useGetEventCriteriasQuery(eventID);
+    // const { data: eventCriteria } = useGetEventCriteriasQuery(eventID);
 
     const [startTime, setStartTime] = useState();
     const [endTime, setEndTime] = useState();
@@ -31,7 +31,7 @@ const NewOrEditEvent = forwardRef(({ onHandleEventInParent }, ref) => {
     const [eventLocation, setEventLocation] = useState("");
     const [eventContent, setEventContent] = useState("");
     const [eventCategory, setEventCategory] = useState(
-        role === "LCD" ? "Hoạt động liên chi Đoàn" : ""
+        role === "LCD" ? "1" : ""
     );
     const [eventServePoint, setEventServePoint] = useState("");
     const [isLimitParticipants, setIsLimitParticipants] = useState(false);
@@ -43,13 +43,14 @@ const NewOrEditEvent = forwardRef(({ onHandleEventInParent }, ref) => {
 
     const { data: falcutyCriteria } = useGetFalcutyCriteriaQuery();
     const { data: schoolCriteria } = useGetSchoolCriteriaQuery();
+    const { data: academicYears } = useGetAcademicYearsQuery();
 
     useEffect(() => {
-        if (event) {
+        if (falcutyCriteria && schoolCriteria && academicYears && event) {
             setEventTitle(event.name || "");
             setEventLocation(event.location || "");
             setEventContent(event.description || "");
-            setEventCategory(event.eventType || (role === "LCD" ? "Hoạt động liên chi Đoàn" : ""));
+            setEventCategory(role === "LCD" ? "1" : "");
             setEventServePoint(event.score || "");
             setStartTime(event.date || "");
             setEndTime(event.endDate || "");
@@ -59,21 +60,21 @@ const NewOrEditEvent = forwardRef(({ onHandleEventInParent }, ref) => {
             setIsLimitParticipants(event.maxRegistrations !== -1);
             setParticipantLimit(event.maxRegistrations || "");
             setAcademicYear(event.semester || "");
+    
+            if (event?.eventCriteria?.eventCriteriaLcd) {
+                const ids = event?.eventCriteria.eventCriteriaLcd.map((item) => item.id);
+                setFalcultyCriteria(ids);
+            }
+    
+            if (event?.eventCriteria?.eventCriteria) {
+                const ids = event?.eventCriteria.eventCriteria.map((item) => item.id);
+                setUniversityCriteria(ids);
+            }
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [event]);
+    }, [falcutyCriteria, schoolCriteria, academicYears, event, role]);
 
-    useEffect(() => {
-        if (eventCriteria?.eventCriteriaLcd) {
-            const ids = eventCriteria.eventCriteriaLcd.map((item) => item.id);
-            setFalcultyCriteria(ids);
-        }
 
-        if (eventCriteria?.eventCriteria) {
-            const ids = eventCriteria.eventCriteria.map((item) => item.id);
-            setUniversityCriteria(ids);
-        }
-    }, [eventCriteria]);
+    
 
     const handleFalcultyCriteria = (id, isChecked) => {
         setFalcultyCriteria((prev) => {
@@ -174,13 +175,16 @@ const NewOrEditEvent = forwardRef(({ onHandleEventInParent }, ref) => {
                 <div className="label">
                     <span className="label-text">Năm học</span>
                 </div>
-                <input 
-                    type="text" 
-                    placeholder="Năm học..." 
-                    className="input input-bordered w-full max-w-xs rounded-md" 
-                    value={academicYear}
+                <select  
+                    className="select select-bordered rounded-md" 
+                    value={academicYear} 
                     onChange={(e) => setAcademicYear(e.target.value)}
-                />
+                >
+                    <option value="">Chọn năm học...</option>
+                    {academicYears?.map((item) => (
+                        <option key={item.id} value={item.id}>{item.name}</option>
+                    ))}
+                </select>
             </label>
     
             <section className="flex flex-wrap md:flex-nowrap w-full max-w-3xl items-center gap-3">
@@ -189,7 +193,7 @@ const NewOrEditEvent = forwardRef(({ onHandleEventInParent }, ref) => {
                         <span className="label-text">Thời gian bắt đầu</span>
                     </div>
                     <input 
-                        type="date" 
+                        type="datetime-local" 
                         className="input input-bordered w-full max-w-sm rounded-md" 
                         value={startTime}
                         onChange={(e) => setStartTime(e.target.value)}
@@ -200,7 +204,7 @@ const NewOrEditEvent = forwardRef(({ onHandleEventInParent }, ref) => {
                         <span className="label-text">Thời gian kết thúc</span>
                     </div>
                     <input 
-                        type="date" 
+                        type="datetime-local" 
                         className="input input-bordered w-full max-w-sm rounded-md" 
                         value={endTime}
                         onChange={(e) => setEndTime(e.target.value)}
@@ -214,7 +218,7 @@ const NewOrEditEvent = forwardRef(({ onHandleEventInParent }, ref) => {
                         <span className="label-text">Thời gian bắt đầu đăng ký</span>
                     </div>
                     <input 
-                        type="date" 
+                        type="datetime-local" 
                         className="input input-bordered w-full max-w-sm rounded-md" 
                         value={startRegTime}
                         onChange={(e) => setStartRegTime(e.target.value)}
@@ -225,7 +229,7 @@ const NewOrEditEvent = forwardRef(({ onHandleEventInParent }, ref) => {
                         <span className="label-text">Thời gian kết thúc đăng ký</span>
                     </div>
                     <input 
-                        type="date" 
+                        type="datetime-local" 
                         className="input input-bordered w-full max-w-sm rounded-md" 
                         value={endRegTime}
                         onChange={(e) => setEndRegTime(e.target.value)}
@@ -271,8 +275,8 @@ const NewOrEditEvent = forwardRef(({ onHandleEventInParent }, ref) => {
                             onChange={(e) => setEventCategory(e.target.value)}
                         >
                             <option value="">Chọn danh mục...</option>
-                            <option value="Hoạt động truyền thống">Hoạt động truyền thống</option>
-                            <option value="Hoạt động học thuật">Hoạt động học thuật</option>
+                            <option value="2">Hoạt động truyền thống</option>
+                            <option value="3">Hoạt động học thuật</option>
                         </select>
                     )
                     

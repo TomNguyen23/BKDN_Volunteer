@@ -12,6 +12,7 @@ import NewEvent from '@/pages/events/new-event'
 import EventJoinedStudent from '@/pages/events/event-joined-student'
 import EditEvent from '@/pages/events/edit-event'
 import CommunityScoreList from '@/pages/community_score/score_list'
+import ExternalEvent from '@/pages/events/external-event'
 
 const publicRoutes = [
     {path: '/', element: Login, Layout: LoginLayout},
@@ -26,6 +27,7 @@ const privateRoutes = [
     {path: URLS.JOINED_EVENTS, element: EventJoinedStudent},
     {path: URLS.NEW_EVENT, element: NewEvent},
     {path: URLS.EDIT_EVENT, element: EditEvent},
+    {path: URLS.EXTERNAL_ACTIVITIES, element: ExternalEvent},
     {path: URLS.COMMUNITY_SCORE, element: CommunityScoreList},
     {path: URLS.EXELLENCE_STUDENTS, element: EventDetail},
 ]

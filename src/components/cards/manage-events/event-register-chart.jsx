@@ -11,14 +11,16 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-const chartData = [
-  { grade: "khóa 20", registrations: 275, fill: "var(--color-grade_1)" },
-  { grade: "khóa 21", registrations: 200, fill: "var(--color-grade_2)" },
-  { grade: "khóa 22", registrations: 287, fill: "var(--color-grade_3)" },
-  { grade: "khóa 23", registrations: 173, fill: "var(--color-grade_4)" },
-  { grade: "khoá 24", registrations: 173, fill: "var(--color-grade_5)" },
-  { grade: "other", registrations: 190, fill: "var(--color-other)" },
-]
+
+import PropTypes from "prop-types"
+// const chartData = [
+//   { grade: "khóa 20", registrations: 275, fill: "var(--color-grade_1)" },
+//   { grade: "khóa 21", registrations: 200, fill: "var(--color-grade_2)" },
+//   { grade: "khóa 22", registrations: 287, fill: "var(--color-grade_3)" },
+//   { grade: "khóa 23", registrations: 173, fill: "var(--color-grade_4)" },
+//   { grade: "khoá 24", registrations: 173, fill: "var(--color-grade_5)" },
+//   { grade: "other", registrations: 190, fill: "var(--color-other)" },
+// ]
 
 const chartConfig = {
   registrations: {
@@ -50,12 +52,38 @@ const chartConfig = {
   },
 }
 
-export function EventChart() {
-  const percentJonined = (100 / 300) * 100
+export function EventChart(props) {
+  let percentJonined = props.totalRegistrations / props.maxRegistrations * 100 || 0;
+  
+  const colors = {
+    Course_20: "var(--color-grade_1)",
+    Course_21: "var(--color-grade_2)",
+    Course_22: "var(--color-grade_3)",
+    Course_23: "var(--color-grade_4)",
+    Course_24: "var(--color-grade_5)",
+    Other: "var(--color-other)",
+  };
+  
+  const gradeMapping = {
+    Course_20: "Khóa 20",
+    Course_21: "Khóa 21",
+    Course_22: "Khóa 22",
+    Course_23: "Khóa 23",
+    Course_24: "Khóa 24",
+    Other: "Other"
+  };
+  
+  const chartData = props.studentByCourse
+  ? Object.entries(props.studentByCourse).map(([key, value]) => ({
+      grade: gradeMapping[key] || key,
+      registrations: value,
+      fill: colors[key] || "var(--color-default)",
+    }))
+  : []; // Nếu data null hoặc undefined, trả về mảng rỗng
 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-      <Card className="col-span-2">
+      <Card className={props.maxRegistrations === -1 ? "col-span-3" : "col-span-2"}>
         <CardHeader>
           <CardTitle>Số lượng sinh viên tham gia theo khóa</CardTitle>
         </CardHeader>
@@ -94,18 +122,26 @@ export function EventChart() {
           </ChartContainer>
         </CardContent>
       </Card>
-
-      <Card className="flex flex-col">
-        <CardHeader className="items-center pb-0">
-          <CardTitle>Tổng số lượng đã đăng ký</CardTitle>
-        </CardHeader>
-        <CardContent className="flex justify-center items-center m-auto">
-          <div className="radial-progress bg-blue-50 border-4 border-blue-50 text-blue-500 text-sm font-medium"
-            style={{ "--value": `${percentJonined}`, "--size": "18rem", "--thickness": "2rem" }} 
-            aria-valuenow={70} role="progressbar">120/400 sinh viên</div>
-        </CardContent>
-      </Card>
+      
+      {props.maxRegistrations !== -1 && (
+        <Card className="flex flex-col">
+          <CardHeader className="items-center pb-0">
+            <CardTitle>Tổng số lượng đã đăng ký</CardTitle>
+          </CardHeader>
+          <CardContent className="flex justify-center items-center m-auto">
+            <div className="radial-progress bg-blue-50 border-4 border-blue-50 text-blue-500 text-sm font-medium"
+              style={{ "--value": `${percentJonined}`, "--size": "18rem", "--thickness": "2rem" }} 
+              aria-valuenow={percentJonined} role="progressbar">{props.totalRegistrations}/{props.maxRegistrations} sinh viên</div>
+          </CardContent>
+        </Card>
+        )}
     </div>
   )
 }
 
+
+EventChart.propTypes = {
+  maxRegistrations: PropTypes.number,
+  studentByCourse: PropTypes.object,
+  totalRegistrations: PropTypes.number,
+}

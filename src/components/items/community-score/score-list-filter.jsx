@@ -8,9 +8,9 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
 const eventStatus = [
-    { label: 'Sắp diễn ra', value: 'upcoming' },
-    { label: 'Đang diễn ra', value: 'ongoing' },
-    { label: 'Đã diễn ra', value: 'completed' },
+    { label: '21TCLC_DT1', value: 'upcoming' },
+    { label: '21TCLC_DT2', value: 'ongoing' },
+    { label: '21T_DT', value: 'completed' },
 ];
 
 const ScoreListFilterItem = () => {
@@ -22,11 +22,41 @@ const ScoreListFilterItem = () => {
                     Bộ lọc
                 </Button>
             </PopoverTrigger>
-            <PopoverContent>
-                <form className="space-y-4" >
+            <PopoverContent className="w-80">
+                <form className="space-y-3" >
                     <label className="form-control w-full max-w-xs">
                         <div className="label">
-                            <span className="label-text font-semibold">Trạng thái</span>
+                            <span className="label-text font-semibold">Khoa</span>
+                        </div>
+                        <select  
+                            className="select select-bordered rounded-md" 
+                            // value={eventCategory} 
+                            // onChange={(e) => setEventCategory(e.target.value)}
+                        >
+                            <option value="">Chọn khoa...</option>
+                            <option value="2">Khoa Công nghệ thông tin</option>
+                            <option value="3">Khoa Xây dựng dân dụng và công nghiệp</option>
+                            <option value="3">Khoa Khoa học công nghệ tiên tiến-PFIEV</option>
+                        </select>
+                    </label>
+
+                    <label className="form-control w-full max-w-xs">
+                        <div className="label">
+                            <span className="label-text font-semibold">Khoá học</span>
+                        </div>
+                        <select  
+                            className="select select-bordered rounded-md" 
+                            // value={eventCategory} 
+                            // onChange={(e) => setEventCategory(e.target.value)}
+                        >
+                            <option value="">Chọn khoá...</option>
+                            <option value="2">2021-2026</option>
+                            <option value="3">2022-2027</option>
+                        </select>
+                    </label>
+                    <label className="form-control w-full max-w-xs">
+                        <div className="label">
+                            <span className="label-text font-semibold">Lớp</span>
                         </div>
                         <div className="flex space-x-1">
                             {eventStatus.map((status, index) => (

@@ -30,6 +30,13 @@ const SideBar = () => {
                     </div>
                 </SideBarItem>
 
+                <SideBarItem navigateTo={URLS.EXTERNAL_ACTIVITIES}>
+                    <div className="flex items-center">
+                        <span className="material-symbols-outlined mr-1">diversity_2</span>
+                        <span className='text-lg'>Hoạt động khác</span>
+                    </div>
+                </SideBarItem>
+
                 <SideBarItem navigateTo={URLS.COMMUNITY_SCORE}>
                     <div className="flex items-center">
                         <span className="material-symbols-outlined mr-1">format_list_numbered_rtl</span>

@@ -56,7 +56,7 @@ const EventsList = () => {
             .then((res) => {
                 toast({
                     title: "Thành công",
-                    description: res.data,
+                    description: res.mess,
                 });
                 navigateTo(URLS.MANAGE_EVENTS);
             })
@@ -98,11 +98,12 @@ const EventsList = () => {
                 Tạo sự kiện
             </button>
         </div>
-        <Table>
+        {eventsData?.events && eventsData?.events.length !== 0 ? (
+            <Table>
             <TableHeader>
                 <TableRow>
                     <TableHead className="w-3 hidden sm:table-cell">STT</TableHead>
-                    <TableHead className="w-[30rem]">Tên sự kiện</TableHead>
+                    <TableHead className="w-[20rem]">Tên sự kiện</TableHead>
                     <TableHead className="hidden sm:table-cell">Thời gian diễn ra</TableHead>
                     <TableHead className="hidden sm:table-cell">Thời gian đăng ký</TableHead>
                     <TableHead className="text-center">Trạng thái</TableHead>
@@ -114,10 +115,10 @@ const EventsList = () => {
                         <TableCell className="font-medium text-center hidden sm:table-cell">{index + 1}</TableCell>
                         <TableCell>{event.name}</TableCell>
                         <TableCell className="hidden sm:table-cell">
-                            {format(new Date(event.date), "dd/MM/yyyy")} - {format(new Date(event.endDate), "dd/MM/yyyy")}
+                            {format(new Date(event.date), "HH:mm dd/MM/yyyy")} - {format(new Date(event.endDate), "HH:mm dd/MM/yyyy")}
                         </TableCell>
                         <TableCell className="hidden sm:table-cell">
-                            {format(new Date(event.registrationStartDate), "dd/MM/yyyy")} - {format(new Date(event.registrationEndDate), "dd/MM/yyyy")}
+                            {format(new Date(event.registrationStartDate), "HH:mm dd/MM/yyyy")} - {format(new Date(event.registrationEndDate), "HH:mm dd/MM/yyyy")}
                         </TableCell>
                         <TableCell className="text-center">
                             {eventStatus(event.date, event.endDate) === 'Sắp diễn ra' ? (
@@ -147,6 +148,13 @@ const EventsList = () => {
             </TableBody>
             
         </Table>
+        ) : (
+            <div className="flex flex-col justify-center items-center h-40 my-20">
+                <span className="material-symbols-outlined text-9xl text-gray-400">news</span>
+                <p className="font-semibold text-xl text-gray-400">Bạn chưa tạo sự kiện nào</p>
+            </div>
+        )}
+        
         </>
      );
 }

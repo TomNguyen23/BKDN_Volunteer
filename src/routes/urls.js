@@ -5,6 +5,7 @@ const URLS = {
     "JOINED_EVENTS": '/manage-events/joined-events',
     "NEW_EVENT": '/manage-events/new-event',
     "EDIT_EVENT": '/manage-events/edit-event',
+    "EXTERNAL_ACTIVITIES": '/external-activities',
     "COMMUNITY_SCORE": '/community-score',
     "EXELLENCE_STUDENTS": '/excellence-students',
 }

@@ -9,9 +9,13 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button";
+import { useGetEventRegistrationQuery } from "@/api/rtkQuery/featureApi/eventApiSlice";
+import { useSelector } from "react-redux";
   
 
 const EventRegistration = () => {
+    const eventID = useSelector((state) => state.events.eventID);
+    const { data: eventRegistration } = useGetEventRegistrationQuery(eventID);
     
     const downloadFileAtUrl = (url) => {
         const fileName = url.split("/").pop();
@@ -28,7 +32,11 @@ const EventRegistration = () => {
 
     return ( 
         <div>
-            <EventChart />
+            <EventChart 
+                maxRegistrations={eventRegistration?.maxRegistrations}
+                totalRegistrations={eventRegistration?.totalRegistrations}
+                studentByCourse={eventRegistration?.studentByCourse}
+            />
 
             <div className="flex justify-between items-center gap-4 mt-10 mb-3">
                 <label className="input input-bordered flex items-center gap-2 h-10">
@@ -61,18 +69,20 @@ const EventRegistration = () => {
                     <TableHead className="w-[50px]">MSSV</TableHead>
                     <TableHead className="w-60">Họ và tên</TableHead>
                     <TableHead>Lớp sinh hoạt</TableHead>
-                    <TableHead className="w-80">Ngành</TableHead>
+                    <TableHead className="w-80">Khoa</TableHead>
                     <TableHead>E-mail</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    <TableRow>
-                    <TableCell className="font-medium">102210125</TableCell>
-                    <TableCell>Nguyễn Vương Quốc Trường Thọ</TableCell>
-                    <TableCell>21TCLC_DT3</TableCell>
-                    <TableCell>Công nghệ thông tin-CLC đặt thù hợp tác doanh nghiệp_kĩ sư</TableCell>
-                    <TableCell >nguyentruongtho123@gmail.com</TableCell>
-                    </TableRow>
+                    {eventRegistration?.users.map((user) => (
+                        <TableRow key={user.id}>
+                            <TableCell className="font-medium">{user?.studentId}</TableCell>
+                            <TableCell>{user?.fullname}</TableCell>
+                            <TableCell>{user?.clazz ? user.clazz : "-"}</TableCell>
+                            <TableCell>{user?.department ? user.department : "-"}</TableCell>
+                            <TableCell>{user?.email ? user.email : "-"}</TableCell>
+                        </TableRow>
+                    ))}
                 </TableBody>
             </Table>
 

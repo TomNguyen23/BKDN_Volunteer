@@ -3,15 +3,22 @@ import { useEffect, useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { eventStatus, formatDateTime } from "@/lib/utils";
 
-import { useGetEventCriteriasQuery } from "@/api/rtkQuery/featureApi/criteriaApiSlice";
 import { useGetEventByIdQuery } from "@/api/rtkQuery/featureApi/eventApiSlice";
 
 import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
+import URLS from "@/routes/urls";
 
 const EventDetail = () => {
+    const location = useLocation();
     const eventID = useSelector((state) => state.events.eventID);
-    const { data: event } = useGetEventByIdQuery(eventID);
-    const { data: eventCriteria } = useGetEventCriteriasQuery(eventID);
+    const { data: event, refetch } = useGetEventByIdQuery(eventID, { refetchOnMountOrArgChange: true });
+
+    useEffect(() => {
+        if (location.pathname === URLS.EVENT_DETAILS) {
+            refetch();
+        }
+    }, [location, refetch]);
 
     const [eventContent, setEventContent] = useState("");
     const textareaRef = useRef(null);
@@ -52,7 +59,7 @@ const EventDetail = () => {
 
         <div className="flex flex-wrap gap-6">
             <img 
-                src={`http://localhost:8080/images/${event?.eventImage[0].imageUrl}`}
+                src={event?.eventImage[0].imageUrl}
                 alt="event-img" 
                 className="w-full md:w-3/5 h-full object-cover rounded-lg"
             />
@@ -121,23 +128,28 @@ const EventDetail = () => {
                 <h3 className="font-bold font-inter text-lg text-main">Sinh viên 5 tốt</h3>
             </div>
 
-            <div className="ml-7">
-                <h3 className="font-semibold text-gray-500">Cấp khoa</h3>
-                <div className="flex flex-wrap items-center gap-1 mt-1">
-                    {eventCriteria?.eventCriteriaLcd.map((criteria, index) => (
-                        <div key={index} className="badge bg-blue-300 text-main font-semibold py-3">{criteria.name}</div>
-                    ))}
+            {event?.eventCriteria?.eventCriteriaLcd && event?.eventCriteria?.eventCriteriaLcd.length > 0 && (
+                <div className="ml-7">
+                    <h3 className="font-semibold text-gray-500">Cấp khoa</h3>
+                    <div className="flex flex-wrap items-center gap-1 mt-1">
+                        {event?.eventCriteria?.eventCriteriaLcd.map((criteria, index) => (
+                            <div key={index} className="badge bg-blue-300 text-main font-semibold py-3">{criteria.name}</div>
+                        ))}
+                    </div>
                 </div>
-            </div>
+            )}
 
-            <div className="ml-7 mt-5">
-                <h3 className="font-semibold text-gray-500">Cấp trường</h3>
-                <div className="flex flex-wrap items-center gap-1 mt-1">
-                    {eventCriteria?.eventCriteria.map((criteria, index) => (
-                        <div key={index} className="badge bg-green-200 text-green-800 font-semibold py-3">{criteria.name}</div>
-                    ))}
+            {event?.eventCriteria?.eventCriteria && event?.eventCriteria?.eventCriteria.length > 0 && (
+                <div className="ml-7 mt-5">
+                    <h3 className="font-semibold text-gray-500">Cấp trường</h3>
+                    <div className="flex flex-wrap items-center gap-1 mt-1">
+                        {event?.eventCriteria?.eventCriteria.map((criteria, index) => (
+                            <div key={index} className="badge bg-green-200 text-green-800 font-semibold py-3">{criteria.name}</div>
+                        ))}
+                    </div>
                 </div>
-            </div>
+            )}
+
         </section>
 
         <section className="mt-5 space-y-2">
@@ -146,7 +158,6 @@ const EventDetail = () => {
                 <h3 className="font-bold font-inter text-lg text-main">Nội dung</h3>
             </div>
 
-            {/* <p className="text-sm">{event?.description}</p> */}
             <textarea
                 ref={textareaRef}
                 className=" bg-white focus:border-none focus:outline-none w-full resize-none overflow-hidden"
