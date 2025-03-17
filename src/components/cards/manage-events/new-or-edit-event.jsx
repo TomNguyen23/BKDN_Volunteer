@@ -2,26 +2,36 @@
 import { useState, useEffect, forwardRef, useImperativeHandle } from "react";
 import PropTypes from 'prop-types';
 import { isBefore } from "date-fns";
+import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 
 import { Separator } from "@/components/ui/separator";
 import { useToast } from '@/components/ui/use-toast';
 import { ToastAction } from '@/components/ui/toast';
 import CriteriaCheckboxItem from "@/components/items/checkbox/criteria-checkbox";
+
+import URLS from "@/routes/urls";
+
 import { useGetFalcutyCriteriaQuery, useGetSchoolCriteriaQuery } from "@/api/rtkQuery/featureApi/criteriaApiSlice";
-import { useSelector } from "react-redux";
 import { useGetAcademicYearsQuery, useGetEventByIdQuery } from "@/api/rtkQuery/featureApi/eventApiSlice";
 
 // eslint-disable-next-line no-unused-vars
 const NewOrEditEvent = forwardRef(({ onHandleEventInParent }, ref) => {
     const { toast } = useToast();
+    const location = useLocation();
     const role = useSelector((state) => state.auth.login.role);
 
     let eventID = useSelector((state) => state.events.eventID);
     const isEdit = useSelector((state) => state.events.isEdit);
     if (isEdit === false) eventID = "";
 
-    const { data: event } = useGetEventByIdQuery(eventID);
-    // const { data: eventCriteria } = useGetEventCriteriasQuery(eventID);
+    const { data: event, refetch } = useGetEventByIdQuery(eventID, { refetchOnMountOrArgChange: true });
+
+    useEffect(() => {
+        if (location.pathname === URLS.EVENT_REGISTRATION) {
+            refetch();
+        }
+    }, [location, refetch]);
 
     const [startTime, setStartTime] = useState();
     const [endTime, setEndTime] = useState();
@@ -59,7 +69,7 @@ const NewOrEditEvent = forwardRef(({ onHandleEventInParent }, ref) => {
             setPlanDocumentLink(event.additionalInfo || "");
             setIsLimitParticipants(event.maxRegistrations !== -1);
             setParticipantLimit(event.maxRegistrations || "");
-            setAcademicYear(event.semester || "");
+            setAcademicYear(event.semester.id || "");
     
             if (event?.eventCriteria?.eventCriteriaLcd) {
                 const ids = event?.eventCriteria.eventCriteriaLcd.map((item) => item.id);

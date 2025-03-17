@@ -10,7 +10,6 @@ import { ToastAction } from "@/components/ui/toast";
 import NewOrEditEvent from "@/components/cards/manage-events/new-or-edit-event";
 import URLS from "@/routes/urls";
 
-import { useGetEventCriteriasQuery } from "@/api/rtkQuery/featureApi/criteriaApiSlice";
 import { useSelector } from "react-redux";
 import { useEditEventMutation, useGetEventByIdQuery } from "@/api/rtkQuery/featureApi/eventApiSlice";
 
@@ -22,7 +21,6 @@ const EditEvent = () => {
 
     const eventID = useSelector((state) => state.events.eventID);
     const { data: event } = useGetEventByIdQuery(eventID);
-    const { data: eventCriteria } = useGetEventCriteriasQuery(eventID);
 
     // const handleGetImage = (image) => {
     //     setEventPanel(image);
@@ -74,7 +72,6 @@ const EditEvent = () => {
             ref={newOrEditEventRef} 
             onHandleEventInParent={() => {}} 
             event={event}
-            eventCriteria={eventCriteria}
         />
 
         {/* <Separator className="my-10" />

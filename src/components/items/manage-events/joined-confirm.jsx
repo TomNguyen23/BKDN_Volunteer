@@ -10,19 +10,67 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"  
 import { useToast } from '@/components/ui/use-toast';
 import { ToastAction } from '@/components/ui/toast';
+import { useApprovedAllStudentsMutation, useApprovedSelectedStudentsMutation } from '@/api/rtkQuery/featureApi/eventApiSlice';
+import { useSelector } from 'react-redux';
   
 
 const JoinedConfirmItem = ({ studentIds }) => {
     const { toast } = useToast();
+    const eventID = useSelector((state) => state.events.eventID);
     const [confirmOption, setConfirmOption] = useState('');
 
+    const [approvedSelectedStudents] = useApprovedSelectedStudentsMutation();
+    const [approvedAllStudents] = useApprovedAllStudentsMutation();
     const handleConfirm = () => {
         if (confirmOption === 'option-1') {
-            console.log('Xác nhận tất cả sinh viên đều tham gia');
-        } else if (confirmOption === 'option-2') {
-            console.log('Xác nhận những sinh viên được đánh dấu:', studentIds);
+            // console.log('Xác nhận tất cả sinh viên đều tham gia');
+            approvedAllStudents(eventID)
+                .unwrap()
+                .then(() => {
+                    toast({
+                        title: "Thành công",
+                        description: "Đã xác nhận tham gia cho những sinh viên được chọn.",
+                    });
+                })
+                .catch((error) => {
+                    toast({
+                        variant: "destructive",
+                        duration: 2000,
+                        title: "Uh oh! Có gì đó sai sai.",
+                        description: error.data.mess,
+                        action: <ToastAction altText="Try again">Thử lại</ToastAction>,
+                    });
+                });
+
+        } 
+        else if (confirmOption === 'option-2') {
+            // console.log('Xác nhận những sinh viên được đánh dấu', studentIds);
+            approvedSelectedStudents({eventID: eventID, listStudentIDs: studentIds})
+                .unwrap()
+                .then(() => {
+                    toast({
+                        title: "Thành công",
+                        description: "Đã xác nhận tham gia cho những sinh viên được chọn.",
+                    });
+                })
+                .catch((error) => {
+                    toast({
+                        variant: "destructive",
+                        duration: 2000,
+                        title: "Uh oh! Có gì đó sai sai.",
+                        description: error.data.mess,
+                        action: <ToastAction altText="Try again">Thử lại</ToastAction>,
+                    });
+                });
         } else {
             toast({
                 variant: "destructive",
@@ -51,19 +99,20 @@ const JoinedConfirmItem = ({ studentIds }) => {
                 </DialogHeader>
 
                 <article>
-                    <label className="form-control w-full max-w-lg">
+                    <label className="form-control w-full max-w-lg mb-8">
                         <div className="label">
                             <span className="label-text">Danh mục xác nhận</span>
                         </div>
-                        <select  
-                            className="select select-bordered rounded-md" 
-                            value={confirmOption} 
-                            onChange={(e) => setConfirmOption(e.target.value)}
-                        >
-                            <option value="">Chọn danh mục...</option>
-                            <option value="option-1">Xác nhận tất cả sinh viên đều tham gia</option>
-                            <option value="option-2">Xác nhận những sinh viên được đánh dấu</option>
-                        </select>
+
+                        <Select onValueChange={setConfirmOption}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Chọn danh mục..." />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="option-1">Xác nhận tất cả sinh viên đều tham gia</SelectItem>
+                                <SelectItem value="option-2">Xác nhận những sinh viên được đánh dấu</SelectItem>
+                            </SelectContent>
+                        </Select>
                     </label>
 
                     <p className="text-sm text-slate-600 font-medium my-5">

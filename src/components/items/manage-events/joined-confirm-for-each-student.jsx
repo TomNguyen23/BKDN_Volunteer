@@ -7,9 +7,36 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import UserDefaultAvatar from "@/assets/user-default-avt.jpg";
+import { useToast } from '@/components/ui/use-toast';
+import { ToastAction } from '@/components/ui/toast';
 
-const JoinedConfirmForEachStudentItem = () => {
+import UserDefaultAvatar from "@/assets/user-default-avt.jpg";
+import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
+import { useApprovedStudentMutation } from "@/api/rtkQuery/featureApi/eventApiSlice";
+
+const JoinedConfirmForEachStudentItem = ({ student }) => {
+    const { toast } = useToast();
+    const eventID = useSelector((state) => state.events.eventID);
+
+    const [approvedStudent] = useApprovedStudentMutation();
+    const handleConfirm = (id) => {
+        approvedStudent({studentID: id, eventID: eventID})
+            .unwrap()
+            .then(() => {
+                console.log('Xác nhận tham gia cho sinh viên:', id);
+            })
+            .catch((error) => {
+                console.log('Error:', error);
+                toast({
+                    variant: "destructive",
+                    duration: 2000,
+                    title: "Uh oh! Có gì đó sai sai.",
+                    description: error.data.mess,
+                    action: <ToastAction altText="Try again">Thử lại</ToastAction>,
+                });
+            });
+    }
     return ( 
         <Dialog>
             <DialogTrigger asChild>
@@ -27,43 +54,62 @@ const JoinedConfirmForEachStudentItem = () => {
                             <AvatarFallback>SV</AvatarFallback>
                         </Avatar>
                         <div>
-                            <h3 className="font-semibold">Nguyễn Thị Trà My</h3>
-                            <p className="text-sm text-slate-600">102210007</p>
+                            <h3 className="font-semibold">{student.fullname}</h3>
+                            <p className="text-sm text-slate-600">{student.studentId}</p>
                         </div>
                     </div>
 
                     <section className="space-y-4 mt-5">
                         <div className="flex items-center gap-1">
                             <p className="font-bold font-inter text-sm text-slate-600">Lớp sinh hoạt:</p>
-                            <p className="text-sm text-slate-600">21TCLC_DT2</p>
+                            <p className="text-sm text-slate-600">{student.clazz}</p>
                         </div>
                         <div className="flex items-center gap-1">
-                            <p className="font-bold font-inter text-sm text-slate-600">Thời gian check-in:</p>
-                            <p className="text-sm text-slate-600">8:21 12/12/2021</p>
+                            <p className="font-bold font-inter text-sm text-slate-600">Khoa:</p>
+                            <p className="text-sm text-slate-600">{student.department}</p>
+                        </div>
+                        <div className="flex items-center gap-1">
+                            <p className="font-bold font-inter text-sm text-slate-600">Email:</p>
+                            <p className="text-sm text-slate-600">{student.email}</p>
                         </div>
                         <div className="flex items-center gap-1">
                             <p className="font-bold font-inter text-sm text-slate-600">Trạng thái:</p>
-                            <div className="badge bg-yellow-100 text-yellow-600 font-semibold py-3">Chờ xác nhận</div>
+                            {student.attendances === false ? (
+                                <div className="badge bg-yellow-100 text-yellow-600 font-semibold py-3">Chờ xác nhận</div>
+                            ) : (
+                                <div className="badge bg-green-100 text-green-600 font-semibold py-3">Đã tham gia</div>
+                            )}
                         </div>
 
-                        {/* <div>
-                            <p className="font-bold font-inter text-sm text-slate-600">Minh chứng</p>
-                            <img   
-                                src="https://scontent.fdad3-4.fna.fbcdn.net/v/t39.30808-6/481465069_1056289479860021_8230703946502279527_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=127cfc&_nc_ohc=euf_kr4JySsQ7kNvgFkIQwg&_nc_oc=Adh2EU9_bltUJgtbfgS6PcnoohsSr9vZwmZwOkZDCJ80zNYPIv3MHWNfXdS6bKNq6e4&_nc_zt=23&_nc_ht=scontent.fdad3-4.fna&_nc_gid=Amyb1klmH4NCTHbPyQUIyGQ&oh=00_AYAlUeQiuX-LOUFcYdONEBhfsMDwromeUyH0dRwg4IiDow&oe=67CC4B90" 
-                                alt="event-proof"
-                                className="w-full h-60 object-cover rounded-lg mt-2 mb-8" 
-                            />
-                        </div> */}
                     </section >
 
-                    <div className="flex justify-end mt-5">
-                        {/* <Button className="bg-red-600 hover:bg-red-700 text-white mr-4">Xác nhận không tham gia</Button> */}
-                        <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">Xác nhận tham gia</Button>
-                    </div>
+                    {student.attendances === false && (
+                        <div className="flex justify-end mt-5">
+                            {/* <Button className="bg-red-600 hover:bg-red-700 text-white mr-4">Xác nhận không tham gia</Button> */}
+                            <Button 
+                                className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                                onClick={() => handleConfirm(student.id)}
+                            >
+                                Xác nhận tham gia
+                            </Button>
+                        </div>
+                    )}
+
                 </article>
             </DialogContent>
         </Dialog>
      );
 }
- 
+JoinedConfirmForEachStudentItem.propTypes = {
+    student: PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        studentId: PropTypes.string.isRequired,
+        fullname: PropTypes.string.isRequired,
+        clazz: PropTypes.string.isRequired,
+        department: PropTypes.string.isRequired,
+        email: PropTypes.string.isRequired,
+        attendances: PropTypes.bool.isRequired,
+    }).isRequired,
+};
+
 export default JoinedConfirmForEachStudentItem;

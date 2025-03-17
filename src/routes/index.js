@@ -29,7 +29,7 @@ const privateRoutes = [
     {path: URLS.EDIT_EVENT, element: EditEvent},
     {path: URLS.EXTERNAL_ACTIVITIES, element: ExternalEvent},
     {path: URLS.COMMUNITY_SCORE, element: CommunityScoreList},
-    {path: URLS.EXELLENCE_STUDENTS, element: EventDetail},
+    {path: URLS.EXCELLENT_STUDENTS, element: EventDetail},
 ]
 
 export { publicRoutes, privateRoutes }

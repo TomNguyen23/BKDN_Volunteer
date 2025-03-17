@@ -17,9 +17,29 @@ export const eventApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['Events'],
         }),
+        removeEvent: builder.mutation({
+            query: (id) => ({
+                url: `/api/v1/events/${id}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['Events'],
+        }),
+        exportEventRegistration: builder.mutation({
+            query: (eventID) => ({
+                url: `/api/v1/registrations/export/${eventID}`,
+                method: "GET",
+                responseHandler: async (response) => {
+                    if (!response.ok) throw new Error("Lỗi khi tải file!");
+                    return response.blob();
+                },
+            }),
+        }),
+        // --------------------------------------------
 
+
+        // --------------------------------------------
         getAllEvents: builder.query({
-            query: () => '/api/v1/events?page=0&limit=100',
+            query: ({ page, rowsPerPage }) => `/api/v1/events?page=${page}&limit=${rowsPerPage}`,
             providesTags: ['Events'],
         }),
         getEventById: builder.query({
@@ -27,6 +47,7 @@ export const eventApiSlice = apiSlice.injectEndpoints({
         }),
         getEventRegistration: builder.query({
             query: (id) => `/api/v1/registrations/event/${id}`,
+            providesTags: ['EventRegistration'],
         }),
         getAcademicYears: builder.query({
             query: () => "/api/v1/semesters",
@@ -50,19 +71,40 @@ export const eventApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['ExternalEvents'],
         }),
+        // --------------------------------------------
 
-        removeEvent: builder.mutation({
-            query: (id) => ({
-                url: `/api/v1/events/${id}`,
-                method: 'DELETE',
+
+        // --------------------------------------------
+        approvedSelectedStudents: builder.mutation({
+            query: ({eventID, listStudentIDs}) => ({
+                url: `api/v1/points/batch/${eventID}`,
+                method: 'POST',
+                body: listStudentIDs
             }),
-            invalidatesTags: ['Events'],
+            invalidatesTags: ['EventRegistration'],
         }),
+        approvedStudent: builder.mutation({
+            query: ({studentID, eventID}) => ({
+                url: `/api/v1/points/${studentID}/${eventID}`,
+                method: 'POST',
+            }),
+            invalidatesTags: ['EventRegistration'],
+        }),
+        approvedAllStudents: builder.mutation({
+            query: (eventID) => ({
+                url: `/api/v1/points/batchAll/${eventID}`,
+                method: 'POST',
+            }),
+            invalidatesTags: ['EventRegistration'],
+        }),
+        // --------------------------------------------
     }),
 });
 
 export const { useCreateEventMutation, 
                 useEditEventMutation,
+                useRemoveEventMutation,
+                useExportEventRegistrationMutation,
                 useGetAllEventsQuery,
                 useGetEventByIdQuery, 
                 useGetEventRegistrationQuery,
@@ -70,5 +112,7 @@ export const { useCreateEventMutation,
                 useGetExternalEventsQuery,
                 useApprovedExternalEventMutation,
                 useRejectedExternalEventMutation,
-                useRemoveEventMutation,
+                useApprovedSelectedStudentsMutation,
+                useApprovedStudentMutation,
+                useApprovedAllStudentsMutation,
             } = eventApiSlice;

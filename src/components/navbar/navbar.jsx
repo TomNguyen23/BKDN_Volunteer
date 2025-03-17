@@ -37,7 +37,7 @@ const Navbar = () => {
                 path === URLS.JOINED_EVENTS ? 'Quản lý sự kiện' : 
                 path === URLS.EXTERNAL_ACTIVITIES ? 'Hoạt động khác' :
                 path === URLS.COMMUNITY_SCORE ? 'Quản lý điểm PVCĐ' :
-                path === URLS.EXELLENCE_STUDENTS ? 'Sinh viên 5 tốt' : ''}
+                path === URLS.EXCELLENT_STUDENTS ? 'Sinh viên 5 tốt' : ''}
             </h1>
 
             <DropdownMenu>

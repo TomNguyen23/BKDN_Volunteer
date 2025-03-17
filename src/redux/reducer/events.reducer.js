@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     eventID: null,
     isEdit: false,
+    eventName: "",
 };
 
 const authSlice = createSlice({
@@ -15,11 +16,15 @@ const authSlice = createSlice({
             state.eventID = id;
             state.isEdit = isEdit;
         },
+        getEventName(state, action) {
+            state.eventName = action.payload;
+        },
     },
 });
 
 export const { 
     getEventID,
+    getEventName,
 } = authSlice.actions;
 
 export default authSlice.reducer;

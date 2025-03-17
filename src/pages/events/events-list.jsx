@@ -19,24 +19,50 @@ import { ToastAction } from "@/components/ui/toast";
 import URLS from "@/routes/urls";
 import EventFilter from "@/components/items/manage-events/events-filter";
 
+import { useState } from "react";
 import { useGetAllEventsQuery, useRemoveEventMutation } from "@/api/rtkQuery/featureApi/eventApiSlice";
 
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { useDispatch } from 'react-redux';
-import { getEventID } from "@/redux/reducer/events.reducer";
+import { getEventID, getEventName } from "@/redux/reducer/events.reducer";
 import { eventStatus } from "@/lib/utils";
+import PaginationItem from "@/components/items/pagination/pagination";
 
 const EventsList = () => {
     const { toast } = useToast();
     const dispatch = useDispatch();
     const navigateTo = useNavigate();
 
-    const { data: eventsData } = useGetAllEventsQuery();
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
 
-    const handleEventDetail = (id) => {
+    const handleChangePageInParent = (e) => {
+        setPage(e.selected + 1);
+    };
+
+    const handleChangeRowsPerPageInParent = (rows) => {
+        setRowsPerPage(rows);
+    };
+
+    const { data: eventsData } = useGetAllEventsQuery({page, rowsPerPage}, {refetchOnMountOrArgChange: true});
+
+    const handleEventDetail = (id, eventName) => {
         dispatch(getEventID({ id, isEdit: false }));
+        dispatch(getEventName(eventName));
         navigateTo(URLS.EVENT_DETAILS);
+    };
+
+    const handleEventRegistration = (id, eventName) => {
+        dispatch(getEventID({ id, isEdit: false }));
+        dispatch(getEventName(eventName));
+        navigateTo(URLS.EVENT_REGISTRATION);
+    };
+
+    const handleConfirmJoined = (id, eventName) => {
+        dispatch(getEventID({ id, isEdit: false }));
+        dispatch(getEventName(eventName));
+        navigateTo(URLS.JOINED_EVENTS);
     };
 
     const handleEventEdit = (id) => {
@@ -99,55 +125,66 @@ const EventsList = () => {
             </button>
         </div>
         {eventsData?.events && eventsData?.events.length !== 0 ? (
+        <section>
             <Table>
-            <TableHeader>
-                <TableRow>
-                    <TableHead className="w-3 hidden sm:table-cell">STT</TableHead>
-                    <TableHead className="w-[20rem]">Tên sự kiện</TableHead>
-                    <TableHead className="hidden sm:table-cell">Thời gian diễn ra</TableHead>
-                    <TableHead className="hidden sm:table-cell">Thời gian đăng ký</TableHead>
-                    <TableHead className="text-center">Trạng thái</TableHead>
-                </TableRow>
-            </TableHeader>
-            <TableBody>
-                {eventsData?.events?.map((event, index) => (
-                    <TableRow key={index}>
-                        <TableCell className="font-medium text-center hidden sm:table-cell">{index + 1}</TableCell>
-                        <TableCell>{event.name}</TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                            {format(new Date(event.date), "HH:mm dd/MM/yyyy")} - {format(new Date(event.endDate), "HH:mm dd/MM/yyyy")}
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                            {format(new Date(event.registrationStartDate), "HH:mm dd/MM/yyyy")} - {format(new Date(event.registrationEndDate), "HH:mm dd/MM/yyyy")}
-                        </TableCell>
-                        <TableCell className="text-center">
-                            {eventStatus(event.date, event.endDate) === 'Sắp diễn ra' ? (
-                                <div className="badge bg-gray-400 text-white font-semibold">Sắp diễn ra</div>
-                            ) : eventStatus(event.date, event.endDate) === 'Đã diễn ra' ? (
-                                <div className="badge bg-green-200 text-green-800 font-semibold">Đã diễn ra</div>
-                            ) : (
-                                <div className="badge bg-blue-300 text-main font-semibold">Đang diễn ra</div>
-                            )}
-                        </TableCell>
-                        <TableCell className="text-right">
-                            <DropdownMenu>
-                                <DropdownMenuTrigger>
-                                    <span className="material-symbols-outlined cursor-pointer">more_vert</span>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                    <DropdownMenuItem onClick={() => handleEventDetail(event?.id)}>Chi tiết</DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => handleEventEdit(event?.id)}>Chỉnh sửa sự kiện</DropdownMenuItem>
-                                    <DropdownMenuItem>Đóng đơn đăng ký sớm</DropdownMenuItem>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem onClick={() => handleRemoveEvent(event?.id)} className="text-red-700">Hủy sự kiện</DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </TableCell>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead className="w-3 hidden sm:table-cell">STT</TableHead>
+                        <TableHead className="w-[20rem]">Tên sự kiện</TableHead>
+                        <TableHead className="hidden sm:table-cell">Thời gian diễn ra</TableHead>
+                        <TableHead className="hidden sm:table-cell">Thời gian đăng ký</TableHead>
+                        <TableHead className="text-center">Trạng thái</TableHead>
                     </TableRow>
-                ))}
-            </TableBody>
-            
-        </Table>
+                </TableHeader>
+                <TableBody>
+                    {eventsData?.events?.map((event, index) => (
+                        <TableRow key={index}>
+                            <TableCell className="font-medium text-center hidden sm:table-cell">{index + 1}</TableCell>
+                            <TableCell>{event.name}</TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                                {format(new Date(event.date), "HH:mm dd/MM/yyyy")} - {format(new Date(event.endDate), "HH:mm dd/MM/yyyy")}
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                                {format(new Date(event.registrationStartDate), "HH:mm dd/MM/yyyy")} - {format(new Date(event.registrationEndDate), "HH:mm dd/MM/yyyy")}
+                            </TableCell>
+                            <TableCell className="text-center">
+                                {eventStatus(event.date, event.endDate) === 'Sắp diễn ra' ? (
+                                    <div className="badge bg-gray-400 text-white font-semibold py-3">Sắp diễn ra</div>
+                                ) : eventStatus(event.date, event.endDate) === 'Đã diễn ra' ? (
+                                    <div className="badge bg-green-200 text-green-800 font-semibold py-3">Đã diễn ra</div>
+                                ) : (
+                                    <div className="badge bg-blue-300 text-main font-semibold py-3">Đang diễn ra</div>
+                                )}
+                            </TableCell>
+                            <TableCell className="text-right">
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger>
+                                        <span className="material-symbols-outlined cursor-pointer">more_vert</span>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end">
+                                        <DropdownMenuItem onClick={() => handleEventDetail(event?.id, event?.name)}>Chi tiết</DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => handleEventEdit(event?.id)}>Chỉnh sửa sự kiện</DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => handleEventRegistration(event?.id, event?.name)}>Danh sách đăng ký</DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => handleConfirmJoined(event?.id, event?.name)}>Xác nhận tham gia</DropdownMenuItem>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuItem onClick={() => handleRemoveEvent(event?.id)} className="text-red-700">Hủy sự kiện</DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+                
+            </Table>
+            <div className="w-full my-4 px-4 flex justify-end items-center">
+                <PaginationItem 
+                    totalPages={eventsData?.totalPage} 
+                    rowsPerPage={rowsPerPage}
+                    handleChangePage={handleChangePageInParent} 
+                    handleChangeRowsPerPage={handleChangeRowsPerPageInParent}
+                />
+            </div>
+        </section>
         ) : (
             <div className="flex flex-col justify-center items-center h-40 my-20">
                 <span className="material-symbols-outlined text-9xl text-gray-400">news</span>

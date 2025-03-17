@@ -2,7 +2,6 @@ import { useState } from "react";
 
 import JoinedConfirmItem from "@/components/items/manage-events/joined-confirm";
 import JoinedConfirmForEachStudentItem from "@/components/items/manage-events/joined-confirm-for-each-student";
-import CriteriaCheckboxItem from "@/components/items/checkbox/criteria-checkbox";
 import {
     Table,
     TableBody,
@@ -12,20 +11,25 @@ import {
     TableRow,
 } from "@/components/ui/table"
 
-import { format } from "date-fns";
+import { useSelector } from "react-redux";
+import { useGetEventRegistrationQuery } from "@/api/rtkQuery/featureApi/eventApiSlice";
+
 
 const EventJoinedStudent = () => {
+    const eventID = useSelector((state) => state.events.eventID);
+    const { data: registrationList } = useGetEventRegistrationQuery(eventID);
     const [selectedStudents, setSelectedStudents] = useState([]);
 
-    const handleSelectStudent = (studentID, isChecked) => {
-        setSelectedStudents((prev) => {
-            if (isChecked) {
-                return [...prev, studentID];
+    const handleCheckboxChange = (event) => {
+        const { value, checked } = event.target;
+        setSelectedStudents((prevSelectedStudents) => {
+            if (checked) {
+                return [...prevSelectedStudents, value];
             } else {
-                return prev.filter((id) => id !== studentID);
+                return prevSelectedStudents.filter((studentId) => studentId !== value);
             }
         });
-    }
+    };
 
     return ( 
         <>
@@ -56,35 +60,43 @@ const EventJoinedStudent = () => {
                 <TableRow>
                     <TableHead className="w-1 hidden sm:table-cell"></TableHead>
                     <TableHead className="w-3 hidden sm:table-cell">MSSV</TableHead>
-                    <TableHead className="w-[30rem]">Họ và tên</TableHead>
+                    <TableHead className="w-[20rem]">Họ và tên</TableHead>
                     <TableHead className="hidden sm:table-cell">Lớp sinh hoạt</TableHead>
-                    <TableHead className="hidden sm:table-cell">Thời gian check-in</TableHead>
+                    <TableHead className="w-[20rem] hidden sm:table-cell">Khoa</TableHead>
                     <TableHead className="text-center">Trạng thái</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
-                <TableRow>
-                    <TableCell className="hidden sm:table-cell">
-                        <CriteriaCheckboxItem />
-                    </TableCell>
-                    <TableCell className="font-medium text-center hidden sm:table-cell">102210007</TableCell>
-                    <TableCell>Nguyễn Thị Trà My</TableCell>
-                    <TableCell className="hidden sm:table-cell">21TCLC_DT2</TableCell>
-                    <TableCell className="hidden sm:table-cell">
-                        {/* {format(new Date(event.date), "dd/MM/yyyy")} */}
-
-                        8:21 12/12/2021
-                    </TableCell>
-                    <TableCell className="text-center">
-                        <div className="badge bg-yellow-100 text-yellow-600 font-semibold py-3">Chờ xác nhận</div>
-                    </TableCell>
-                    <TableCell className="text-right">
-                        <JoinedConfirmForEachStudentItem />
-                    </TableCell>
-                </TableRow>
+                {registrationList?.users.map((student) => (
+                    <TableRow key={student.id}>
+                        <TableCell className="hidden sm:table-cell">
+                            <input 
+                                type="checkbox" 
+                                className="checkbox" 
+                                value={student.id} 
+                                onChange={handleCheckboxChange}
+                            />
+                        </TableCell>
+                        <TableCell className="font-medium text-center hidden sm:table-cell">{student.studentId}</TableCell>
+                        <TableCell>{student.fullname}</TableCell>
+                        <TableCell className="hidden sm:table-cell">{student.clazz}</TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                            {student.department}
+                        </TableCell>
+                        <TableCell className="text-center">
+                            {student.attendances === false ? (
+                                <div className="badge bg-yellow-100 text-yellow-600 font-semibold py-3">Chờ xác nhận</div>
+                            ) : (
+                                <div className="badge bg-green-100 text-green-600 font-semibold py-3">Đã tham gia</div>
+                            )}
+                        </TableCell>
+                        <TableCell className="text-right">
+                            <JoinedConfirmForEachStudentItem student={student} />
+                        </TableCell>
+                    </TableRow>
+                ))}
                 
             </TableBody>
-            
         </Table>
         </>
      );

@@ -75,11 +75,11 @@ const LoginPage = () => {
             <form className='md:mt-10' onSubmit={formik.handleSubmit}>
                 <label className="form-control w-full">
                     <div className="label">
-                        <span className="label-text">Email</span>
+                        <span className="label-text">Tên đăng nhập</span>
                     </div>
                     <input 
                         type="text" 
-                        placeholder="Email..." 
+                        placeholder="Tên đăng nhập..." 
                         className="input input-bordered w-full" 
                         id='username'
                         name='username'
@@ -94,7 +94,7 @@ const LoginPage = () => {
                         <span className="label-text">Mật khẩu</span>
                     </div>
                     <input 
-                        type="text" 
+                        type="password" 
                         placeholder="Mật khẩu..." 
                         className="input input-bordered w-full" 
                         id='password'

@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 import { eventStatus, formatDateTime } from "@/lib/utils";
 
 import { useGetEventByIdQuery } from "@/api/rtkQuery/featureApi/eventApiSlice";
@@ -87,7 +87,7 @@ const EventDetail = () => {
                     </div>
                     <div className="flex items-center gap-1 ml-7">
                         <p className="font-bold font-inter text-sm text-slate-600">Năm học:</p>
-                        <p className="text-sm text-slate-600">{event?.semester}</p>
+                        <p className="text-sm text-slate-600">{event?.semester.name}</p>
                     </div>
                     <div className="flex items-center gap-1 ml-7 mt-1">
                         <p className="font-bold font-inter text-sm text-slate-600">Thời gian:</p>
@@ -118,7 +118,7 @@ const EventDetail = () => {
                     </div>
                 </section>
 
-                <Button className="mt-6">Đóng đơn đăng ký sớm</Button>
+                {/* <Button className="mt-6">Đóng đơn đăng ký sớm</Button> */}
             </div>
         </div>
 

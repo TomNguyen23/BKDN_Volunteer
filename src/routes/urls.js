@@ -7,7 +7,7 @@ const URLS = {
     "EDIT_EVENT": '/manage-events/edit-event',
     "EXTERNAL_ACTIVITIES": '/external-activities',
     "COMMUNITY_SCORE": '/community-score',
-    "EXELLENCE_STUDENTS": '/excellence-students',
+    "EXCELLENT_STUDENTS": '/excellent-students',
 }
 
 export default URLS;

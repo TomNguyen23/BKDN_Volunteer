@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { setCredentials, logout } from '@/redux/reducer/auth.reducer';
 
 const baseQuery = fetchBaseQuery({ 
-    baseUrl: 'http://localhost:8081',
+    baseUrl: 'http://localhost:8080',
     prepareHeaders: (headers, { getState }) => {
         const token = getState().auth.login.token;
         if (token) {
@@ -45,7 +45,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: baseQueryWithReauth,
-    tagTypes: ['Events', 'ExternalEvents'],
+    tagTypes: ['Events', 'ExternalEvents', 'EventRegistration'],
     // eslint-disable-next-line no-unused-vars
     endpoints: (builder) => ({ })
 });

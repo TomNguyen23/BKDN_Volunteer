@@ -13,14 +13,6 @@ import {
 } from "@/components/ui/chart"
 
 import PropTypes from "prop-types"
-// const chartData = [
-//   { grade: "khóa 20", registrations: 275, fill: "var(--color-grade_1)" },
-//   { grade: "khóa 21", registrations: 200, fill: "var(--color-grade_2)" },
-//   { grade: "khóa 22", registrations: 287, fill: "var(--color-grade_3)" },
-//   { grade: "khóa 23", registrations: 173, fill: "var(--color-grade_4)" },
-//   { grade: "khoá 24", registrations: 173, fill: "var(--color-grade_5)" },
-//   { grade: "other", registrations: 190, fill: "var(--color-other)" },
-// ]
 
 const chartConfig = {
   registrations: {
@@ -129,7 +121,7 @@ export function EventChart(props) {
             <CardTitle>Tổng số lượng đã đăng ký</CardTitle>
           </CardHeader>
           <CardContent className="flex justify-center items-center m-auto">
-            <div className="radial-progress bg-blue-50 border-4 border-blue-50 text-blue-500 text-sm font-medium"
+            <div className="radial-progress bg-blue-50 border-8 border-blue-50 text-blue-500 text-sm font-medium"
               style={{ "--value": `${percentJonined}`, "--size": "18rem", "--thickness": "2rem" }} 
               aria-valuenow={percentJonined} role="progressbar">{props.totalRegistrations}/{props.maxRegistrations} sinh viên</div>
           </CardContent>

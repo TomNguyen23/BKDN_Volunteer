@@ -14,7 +14,7 @@ const EventDetailNavbar = () => {
                 </EventDetailNavbarItem>
 
                 <EventDetailNavbarItem navigateTo={URLS.JOINED_EVENTS}>
-                    Danh sách đã tham gia
+                    Xác nhận đã tham gia
                 </EventDetailNavbarItem>
             </ul>
         </div>

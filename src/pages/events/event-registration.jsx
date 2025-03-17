@@ -9,25 +9,48 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button";
-import { useGetEventRegistrationQuery } from "@/api/rtkQuery/featureApi/eventApiSlice";
+import { useExportEventRegistrationMutation, useGetEventRegistrationQuery } from "@/api/rtkQuery/featureApi/eventApiSlice";
 import { useSelector } from "react-redux";
+
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import URLS from "@/routes/urls";
   
 
 const EventRegistration = () => {
+    const location = useLocation();
     const eventID = useSelector((state) => state.events.eventID);
-    const { data: eventRegistration } = useGetEventRegistrationQuery(eventID);
+    const eventName = useSelector((state) => state.events.eventName);
+    const { data: eventRegistration, refetch } = useGetEventRegistrationQuery(eventID, { refetchOnMountOrArgChange: true });
     
-    const downloadFileAtUrl = (url) => {
-        const fileName = url.split("/").pop();
-        fetch(url)
-            .then((response) => response.blob())
-            .then((blob) => {
-                const blobUrl = window.URL.createObjectURL(new Blob([blob]));
-                const a = document.createElement("a");
-                a.href = blobUrl;
-                a.download = fileName;
-                a.click();
-            });
+    useEffect(() => {
+        if (location.pathname === URLS.EVENT_REGISTRATION) {
+            refetch();
+        }
+    }, [location, refetch]);
+
+    
+    const [exportEventRegistration] = useExportEventRegistrationMutation();
+    const handleDownload = async () => {
+        if (!eventID) {
+            console.error("Không có eventID");
+            return;
+        }
+
+        try {
+            const blob = await exportEventRegistration(eventID).unwrap();
+            const fileName = `DS đăng ký sự kiện ${eventName}.xlsx`;
+
+            // Tạo blob URL để tải file
+            const blobUrl = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = blobUrl;
+            a.download = fileName;
+            a.click();
+            window.URL.revokeObjectURL(blobUrl);
+        } catch (error) {
+            console.error("Tải file thất bại:", error);
+        }
     };
 
     return ( 
@@ -57,7 +80,7 @@ const EventRegistration = () => {
 
                 <Button 
                     className="btn-primary"
-                    onClick={() => downloadFileAtUrl("http://localhost:8081/images/bd7265ef-2164-4229-9d16-71159660175e_481286189_617434270928486_850820291784427096_n.jpg")}
+                    onClick={handleDownload}
                 >
                     Xuất file danh sách
                 </Button>

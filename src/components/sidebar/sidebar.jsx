@@ -44,7 +44,7 @@ const SideBar = () => {
                     </div>
                 </SideBarItem>
                 
-                <SideBarItem navigateTo={URLS.EXELLENCE_STUDENTS}>
+                <SideBarItem navigateTo={URLS.EXCELLENT_STUDENTS}>
                     <div className="flex items-center">
                         <span className="material-symbols-outlined mr-1">social_leaderboard</span>
                         <span className='text-lg'>Sinh viên 5 tốt</span>
