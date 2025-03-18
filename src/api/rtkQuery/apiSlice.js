@@ -45,7 +45,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: baseQueryWithReauth,
-    tagTypes: ['Events', 'ExternalEvents', 'EventRegistration'],
+    tagTypes: ['Events', 'ExternalEvents', 'EventRegistration', 'SchoolCriteria', 'FalcutyCriteria'],
     // eslint-disable-next-line no-unused-vars
     endpoints: (builder) => ({ })
 });

@@ -13,6 +13,8 @@ import EventJoinedStudent from '@/pages/events/event-joined-student'
 import EditEvent from '@/pages/events/edit-event'
 import CommunityScoreList from '@/pages/community_score/score_list'
 import ExternalEvent from '@/pages/events/external-event'
+import ExcellentStudentsList from '@/pages/excellent-students/excellent-students-list'
+import StudentCriterias from '@/pages/excellent-students/student-criterias'
 
 const publicRoutes = [
     {path: '/', element: Login, Layout: LoginLayout},
@@ -29,7 +31,8 @@ const privateRoutes = [
     {path: URLS.EDIT_EVENT, element: EditEvent},
     {path: URLS.EXTERNAL_ACTIVITIES, element: ExternalEvent},
     {path: URLS.COMMUNITY_SCORE, element: CommunityScoreList},
-    {path: URLS.EXCELLENT_STUDENTS, element: EventDetail},
+    {path: URLS.EXCELLENT_STUDENTS, element: ExcellentStudentsList},
+    {path: URLS.STUDENT_CRITERIA, element: StudentCriterias},
 ]
 
 export { publicRoutes, privateRoutes }

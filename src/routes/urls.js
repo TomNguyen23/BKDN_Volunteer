@@ -8,6 +8,7 @@ const URLS = {
     "EXTERNAL_ACTIVITIES": '/external-activities',
     "COMMUNITY_SCORE": '/community-score',
     "EXCELLENT_STUDENTS": '/excellent-students',
+    "STUDENT_CRITERIA": '/excellent-students/student-criteria',
 }
 
 export default URLS;

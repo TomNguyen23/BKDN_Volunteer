@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import { Toaster } from "@/components/ui/toaster"
 import EventDetailNavbar from "@/components/navbar/event-details-navbar/event-detail-navbar";
 import URLS from "@/routes/urls";
+import ExcellentStudentNavbar from "@/components/navbar/excellent-students-navbar/excellent-students--navbar";
 
 function HomePage( { children } ) {
     const path = window.location.pathname;
@@ -21,6 +22,12 @@ function HomePage( { children } ) {
                     path === URLS.EVENT_REGISTRATION ||
                     path === URLS.JOINED_EVENTS)
                     && <EventDetailNavbar />
+                }
+
+                {
+                    (path === URLS.EXCELLENT_STUDENTS ||
+                    path === URLS.STUDENT_CRITERIA )
+                    && <ExcellentStudentNavbar />
                 }
                 {children}
             </div>
