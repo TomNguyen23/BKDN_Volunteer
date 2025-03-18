@@ -4,8 +4,12 @@ import logo from "@/assets/logo-DUT.jpg"
 
 import SideBarItem from './sidebar-item';
 import URLS from '@/routes/urls';
+import { useSelector } from 'react-redux';
 
 const SideBar = () => {
+    const userRole = useSelector(state => state.auth.login.role);
+    if (userRole === 'STUDENT') return null;
+
     return ( 
         <div className="w-1/5 md:p-4 bg-slate-50 hidden lg:block md:fixed md:h-full md:overflow-y-auto">
             <Link to={URLS.MANAGE_EVENTS} className='flex my-4'>
@@ -30,26 +34,31 @@ const SideBar = () => {
                     </div>
                 </SideBarItem>
 
-                <SideBarItem navigateTo={URLS.EXTERNAL_ACTIVITIES}>
-                    <div className="flex items-center">
-                        <span className="material-symbols-outlined mr-1">diversity_2</span>
-                        <span className='text-lg'>Hoạt động khác</span>
-                    </div>
-                </SideBarItem>
+                {userRole !== 'LCD' && (
+                    <div>
+                        <SideBarItem navigateTo={URLS.EXTERNAL_ACTIVITIES}>
+                            <div className="flex items-center">
+                                <span className="material-symbols-outlined mr-1">diversity_2</span>
+                                <span className='text-lg'>Hoạt động khác</span>
+                            </div>
+                        </SideBarItem>
 
-                <SideBarItem navigateTo={URLS.COMMUNITY_SCORE}>
-                    <div className="flex items-center">
-                        <span className="material-symbols-outlined mr-1">format_list_numbered_rtl</span>
-                        <span className='text-lg'>Quản lý điểm PVCĐ</span>
+                        <SideBarItem navigateTo={URLS.COMMUNITY_SCORE}>
+                            <div className="flex items-center">
+                                <span className="material-symbols-outlined mr-1">format_list_numbered_rtl</span>
+                                <span className='text-lg'>Quản lý điểm PVCĐ</span>
+                            </div>
+                        </SideBarItem>
+                        
+                        <SideBarItem navigateTo={URLS.EXCELLENT_STUDENTS}>
+                            <div className="flex items-center">
+                                <span className="material-symbols-outlined mr-1">social_leaderboard</span>
+                                <span className='text-lg'>Sinh viên 5 tốt</span>
+                            </div>
+                        </SideBarItem>
                     </div>
-                </SideBarItem>
-                
-                <SideBarItem navigateTo={URLS.EXCELLENT_STUDENTS}>
-                    <div className="flex items-center">
-                        <span className="material-symbols-outlined mr-1">social_leaderboard</span>
-                        <span className='text-lg'>Sinh viên 5 tốt</span>
-                    </div>
-                </SideBarItem>
+                )}
+
             </ul>
             
         </div>

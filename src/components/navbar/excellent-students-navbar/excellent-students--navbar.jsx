@@ -4,9 +4,9 @@ import URLS from "@/routes/urls";
 const ExcellentStudentNavbar = () => {
     return ( 
         <ul className='flex flex-wrap mb-5'>
-            <EventDetailNavbarItem navigateTo={URLS.EVENT_DETAILS}>
+            {/* <EventDetailNavbarItem navigateTo={URLS.EVENT_DETAILS}>
                 Tổng quan
-            </EventDetailNavbarItem>
+            </EventDetailNavbarItem> */}
 
             <EventDetailNavbarItem navigateTo={URLS.STUDENT_CRITERIA}>
                 Tiêu chí sinh viên 5 tốt

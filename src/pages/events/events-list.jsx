@@ -20,7 +20,7 @@ import URLS from "@/routes/urls";
 import EventFilter from "@/components/items/manage-events/events-filter";
 
 import { useState } from "react";
-import { useGetAllEventsQuery, useRemoveEventMutation } from "@/api/rtkQuery/featureApi/eventApiSlice";
+import { useGetAllMyEventsQuery, useRemoveEventMutation } from "@/api/rtkQuery/featureApi/eventApiSlice";
 
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
@@ -45,7 +45,7 @@ const EventsList = () => {
         setRowsPerPage(rows);
     };
 
-    const { data: eventsData } = useGetAllEventsQuery({page, rowsPerPage}, {refetchOnMountOrArgChange: true});
+    const { data: eventsData } = useGetAllMyEventsQuery({page, rowsPerPage}, {refetchOnMountOrArgChange: true});
 
     const handleEventDetail = (id, eventName) => {
         dispatch(getEventID({ id, isEdit: false }));

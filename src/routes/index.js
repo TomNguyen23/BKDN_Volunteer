@@ -23,16 +23,16 @@ const publicRoutes = [
 ]
 
 const privateRoutes = [
-    {path: URLS.MANAGE_EVENTS, element: EventsList, roles: ['LCD']},
+    {path: URLS.MANAGE_EVENTS, element: EventsList},
     {path: URLS.EVENT_DETAILS, element: EventDetail},
     {path: URLS.EVENT_REGISTRATION, element: EventRegistration},
     {path: URLS.JOINED_EVENTS, element: EventJoinedStudent},
     {path: URLS.NEW_EVENT, element: NewEvent},
     {path: URLS.EDIT_EVENT, element: EditEvent},
-    {path: URLS.EXTERNAL_ACTIVITIES, element: ExternalEvent},
+    {path: URLS.EXTERNAL_ACTIVITIES, element: ExternalEvent, roles: ['HSV']},
     {path: URLS.COMMUNITY_SCORE, element: CommunityScoreList},
-    {path: URLS.EXCELLENT_STUDENTS, element: ExcellentStudentsList},
-    {path: URLS.STUDENT_CRITERIA, element: StudentCriterias},
+    {path: URLS.EXCELLENT_STUDENTS, element: ExcellentStudentsList, roles: ['HSV']},
+    {path: URLS.STUDENT_CRITERIA, element: StudentCriterias, roles: ['HSV']},
 ]
 
 export { publicRoutes, privateRoutes }
