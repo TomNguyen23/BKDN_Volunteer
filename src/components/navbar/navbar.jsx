@@ -35,6 +35,9 @@ const Navbar = () => {
                 path === URLS.EVENT_DETAILS || 
                 path === URLS.EVENT_REGISTRATION ||
                 path === URLS.JOINED_EVENTS ? 'Quản lý sự kiện' : 
+                path === URLS.ALL_EVENTS ||
+                path === URLS.ALL_EVENTS_DETAILS ||
+                path === URLS.ALL_EVENTS_REGISTRATION ? 'Tất cả sự kiện' :
                 path === URLS.EXTERNAL_ACTIVITIES ? 'Hoạt động khác' :
                 path === URLS.COMMUNITY_SCORE ? 'Quản lý điểm PVCĐ' :
                 path === URLS.EXCELLENT_STUDENTS ? 'Sinh viên 5 tốt' : ''}

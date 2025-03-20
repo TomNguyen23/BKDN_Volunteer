@@ -14,6 +14,14 @@ export const criteriaApiSlice = apiSlice.injectEndpoints({
             query: (eventID) => `/api/v1/events/criteria/${eventID}`,
         }),
 
+
+        getFalcutyCriteriaInSemester: builder.query({
+            query: (semesterID) => `/api/v1/five_good_lcd/${semesterID}`,
+        }),
+        getSchoolCriteriaInSemester: builder.query({
+            query: (semesterID) => `/api/v1/five_good/${semesterID}`,
+        }),
+
         removeSchoolCriteria: builder.mutation({
             query: (id) => ({
                 url: `/api/v1/five_good/delete/${id}`,
@@ -34,6 +42,8 @@ export const criteriaApiSlice = apiSlice.injectEndpoints({
 export const { useGetFalcutyCriteriaQuery,
                 useGetSchoolCriteriaQuery,
                 useGetEventCriteriasQuery,
+                useGetFalcutyCriteriaInSemesterQuery,
+                useGetSchoolCriteriaInSemesterQuery,
                 useRemoveSchoolCriteriaMutation,
                 useRemoveFalcutyCriteriaMutation,
             } = criteriaApiSlice;

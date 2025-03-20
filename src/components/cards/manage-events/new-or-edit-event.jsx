@@ -12,8 +12,9 @@ import CriteriaCheckboxItem from "@/components/items/checkbox/criteria-checkbox"
 
 import URLS from "@/routes/urls";
 
-import { useGetFalcutyCriteriaQuery, useGetSchoolCriteriaQuery } from "@/api/rtkQuery/featureApi/criteriaApiSlice";
+import { useGetFalcutyCriteriaInSemesterQuery, useGetFalcutyCriteriaQuery, useGetSchoolCriteriaInSemesterQuery, useGetSchoolCriteriaQuery } from "@/api/rtkQuery/featureApi/criteriaApiSlice";
 import { useGetAcademicYearsQuery, useGetEventByIdQuery } from "@/api/rtkQuery/featureApi/eventApiSlice";
+import { skipToken } from '@reduxjs/toolkit/query/react';
 
 // eslint-disable-next-line no-unused-vars
 const NewOrEditEvent = forwardRef(({ onHandleEventInParent }, ref) => {
@@ -23,9 +24,10 @@ const NewOrEditEvent = forwardRef(({ onHandleEventInParent }, ref) => {
 
     let eventID = useSelector((state) => state.events.eventID);
     const isEdit = useSelector((state) => state.events.isEdit);
-    if (isEdit === false) eventID = "";
-
-    const { data: event, refetch } = useGetEventByIdQuery(eventID, { refetchOnMountOrArgChange: true });
+    if (isEdit === false) {
+        eventID = "";
+    }
+    const { data: event, refetch } = useGetEventByIdQuery(eventID || skipToken, { refetchOnMountOrArgChange: true });
 
     useEffect(() => {
         if (location.pathname === URLS.EVENT_REGISTRATION) {
@@ -54,6 +56,18 @@ const NewOrEditEvent = forwardRef(({ onHandleEventInParent }, ref) => {
     const { data: falcutyCriteria } = useGetFalcutyCriteriaQuery();
     const { data: schoolCriteria } = useGetSchoolCriteriaQuery();
     const { data: academicYears } = useGetAcademicYearsQuery();
+
+    // const { data: falcutyCriteria } = useGetFalcutyCriteriaInSemesterQuery(academicYear || skipToken);
+    // const { data: schoolCriteria } = useGetSchoolCriteriaInSemesterQuery(academicYear || skipToken);
+
+    // useEffect(() => {
+    //     if (falcutyCriteria) {
+    //         setFalcultyCriteria(falcutyCriteria.map(item => item.id));
+    //     }
+    //     if (schoolCriteria) {
+    //         setUniversityCriteria(schoolCriteria.map(item => item.id));
+    //     }
+    // }, [falcutyCriteria, schoolCriteria]);
 
     useEffect(() => {
         if (falcutyCriteria && schoolCriteria && academicYears && event) {

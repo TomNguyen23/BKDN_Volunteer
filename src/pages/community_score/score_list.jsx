@@ -1,5 +1,7 @@
+import { useState } from "react";
+
 import ScoreListFilterItem from "@/components/items/community-score/score-list-filter";
-import StudentJoinedListItem from "@/components/items/community-score/student-joined-list";
+// import StudentJoinedListItem from "@/components/items/community-score/student-joined-list";
 import {
     Table,
     TableBody,
@@ -8,15 +10,22 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-// import {
-//     DropdownMenu,
-//     DropdownMenuContent,
-//     DropdownMenuItem,
-//     DropdownMenuSeparator,
-//     DropdownMenuTrigger,
-// } from "@/components/ui/dropdown-menu"
+import { useGetCommunityScoreQuery } from "@/api/rtkQuery/featureApi/scoreApiSlice";
 
 const CommunityScoreList = () => {
+    const [filters, setFilters] = useState({
+        departmentID: '',
+        courseID: '',
+        classID: '',
+        semesterID: '',
+    });
+
+    const handleFilterResults = (filters) => {
+        setFilters(filters);
+    };
+
+    const { data: scoreList } = useGetCommunityScoreQuery(filters, {refetchOnMountOrArgChange: true});
+
     return ( 
         <>
         <div className="flex flex-wrap justify-between items-center mb-8">
@@ -37,7 +46,7 @@ const CommunityScoreList = () => {
                     </svg>
                 </label>
 
-                <ScoreListFilterItem />
+                <ScoreListFilterItem onFilterResults={handleFilterResults} />
             </div>
 
         </div>
@@ -53,23 +62,26 @@ const CommunityScoreList = () => {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                <TableRow>
-                    <TableCell className="font-medium text-center hidden sm:table-cell">102200007</TableCell>
-                    <TableCell>Nguyễn Vương Quốc Trường Thọ</TableCell>
-                    <TableCell className="hidden sm:table-cell">
-                        21TCLC_DT1
-                    </TableCell>
-                    <TableCell className="hidden sm:table-cell">
-                        102200007@sv1.dut.udn.vn
-                    </TableCell>
-                    <TableCell className="hidden sm:table-cell">
-                        0987654321
-                    </TableCell>
-                    <TableCell className="text-center font-medium">80</TableCell>
-                    <TableCell className="text-right">
-                        <StudentJoinedListItem />
-                    </TableCell>
-                </TableRow>
+                {scoreList?.map((score, index) => (
+                    <TableRow key={index}>
+                        <TableCell className="font-medium text-center hidden sm:table-cell">{score.studentId}</TableCell>
+                        <TableCell>{score.studentName}</TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                            {score.className}
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                            {score.email}
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                            {score.phoneNumber}
+                        </TableCell>
+                        <TableCell className="text-center font-medium">{score.totalPoints}</TableCell>
+                        {/* <TableCell className="text-right">
+                            <StudentJoinedListItem />
+                        </TableCell> */}
+                    </TableRow>
+                ))}
+                
             </TableBody>
             
         </Table>

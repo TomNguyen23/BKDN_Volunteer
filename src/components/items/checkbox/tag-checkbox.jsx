@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
 
-const CheckboxButton = ({ label = "Check me", index, value, onCheckboxChange }) => {
+const CheckboxButton = ({ label = "Check me", index, value, type, name, onCheckboxChange }) => {
     const [isChecked, setIsChecked] = useState(false);
 
     const handleCheckboxChange = (e) => {
@@ -12,8 +12,9 @@ const CheckboxButton = ({ label = "Check me", index, value, onCheckboxChange }) 
     return (
       <div className="flex">
         <input
-          type="checkbox"
+          type={type || "checkbox"}
           id={`option-${index}`}
+          name={name}
           className="peer hidden"
           checked={isChecked}
           onChange={handleCheckboxChange} 
@@ -35,6 +36,8 @@ CheckboxButton.propTypes = {
     index: PropTypes.number,
     label: PropTypes.string,
     value: PropTypes.string,
+    type: PropTypes.string,
+    name: PropTypes.string,
     onCheckboxChange: PropTypes.func,
 };
   

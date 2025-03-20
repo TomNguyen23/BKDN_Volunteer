@@ -42,6 +42,10 @@ export const eventApiSlice = apiSlice.injectEndpoints({
             query: ({ page, rowsPerPage }) => `/api/v1/events/my-events?page=${page}&limit=${rowsPerPage}`,
             providesTags: ['Events'],
         }),
+        getAllEvents: builder.query({
+            query: ({ page, rowsPerPage }) => `/api/v1/events/all?page=${page}&limit=${rowsPerPage}`,
+            providesTags: ['AllEvents'],
+        }),
         getEventById: builder.query({
             query: (id) => `/api/v1/events/all/${id}`,
         }),
@@ -106,6 +110,7 @@ export const { useCreateEventMutation,
                 useRemoveEventMutation,
                 useExportEventRegistrationMutation,
                 useGetAllMyEventsQuery,
+                useGetAllEventsQuery,
                 useGetEventByIdQuery, 
                 useGetEventRegistrationQuery,
                 useGetAcademicYearsQuery,

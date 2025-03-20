@@ -7,6 +7,7 @@ const StudentCriterias = () => {
     const { data: schoolCriteria} = useGetSchoolCriteriaQuery();
     return ( 
         <>
+            
             <h1 className="font-bold text-gray-500 text-xl mb-8">Sinh viên 5 tốt cấp trường</h1>
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
                 {schoolCriteria?.map((criteria) => (

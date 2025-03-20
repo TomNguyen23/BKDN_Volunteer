@@ -1,4 +1,7 @@
 const URLS = {
+    "ALL_EVENTS": '/events',
+    "ALL_EVENTS_DETAILS": '/events/event-details',
+    "ALL_EVENTS_REGISTRATION": '/events/event-registration',
     "MANAGE_EVENTS": '/manage-events',
     "EVENT_DETAILS": '/manage-events/event-details',
     "EVENT_REGISTRATION": '/manage-events/event-registration',
